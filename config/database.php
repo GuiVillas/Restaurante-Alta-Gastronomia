@@ -21,7 +21,7 @@ de achar as falhas durante o desenvolvimento.
         public static function getConnection() { // Criando um método para fazer a conexão
             if (self::$instance === null) { // Verifica se não existe conexão
                 try { // Iniciando tentativa
-                    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4"; // Definindo o DSN (Data Source Name)
+                    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8"; // Definindo o DSN (Data Source Name)
 
                     self::$instance = new PDO($dsn, DB_USER, DB_PASS, [ // Criando o PDO (PHP Data Objects)
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Configurando para mostrar erros
