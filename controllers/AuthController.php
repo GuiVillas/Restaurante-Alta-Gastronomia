@@ -20,7 +20,7 @@ inicia a sessão para o usuário.
 
             $db = Database::getConnection(); // Pegando conexão PDO
 
-            $stmt = $db->prepare("SELECT id, nome, email, senha, cargo FROM usuarios WHERE = ? LIMIT 1"); // Preparando consulta
+            $stmt = $db->prepare("SELECT id, nome, email, senha, cargo FROM usuario WHERE email = ? LIMIT 1"); // Preparando consulta
             $stmt->execute([$email]); // Executando consulta com o email
             $usuario = $stmt->fetch(); // Obtendo resultado da consulta
 
