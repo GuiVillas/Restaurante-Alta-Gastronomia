@@ -1,15 +1,15 @@
-<!--
-Criado por: Guilherme Villas Boas Braz
-Data: 09/06/2026
-
-Código para conexão com o banco de dados.
-
-Ele usa as credenciais padrões do USBWebServer e 
-ativa o modo de erros do PDO para ajudar na hora 
-de achar as falhas durante o desenvolvimento.
--->
-
 <?php
+    /*
+    Criado por: Guilherme Villas Boas Braz
+    Data: 09/06/2026
+
+    Código para conexão com o banco de dados.
+
+    Ele usa as credenciais padrões do USBWebServer e 
+    ativa o modo de erros do PDO para ajudar na hora 
+    de achar as falhas durante o desenvolvimento.
+    */
+
     define('DB_HOST', 'localhost'); // Definindo o host
     define('DB_USER', 'root'); // Definindo o usuário
     define('DB_PASS', ''); // Definindo a senha

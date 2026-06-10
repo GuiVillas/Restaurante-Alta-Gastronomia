@@ -1,14 +1,14 @@
-<!--
-Criado por: Guilherme Villas Boas Braz
-Data: 10/06/2026
-
-Código controlador de prato
-
-Ele recebe requisições via POST/GET,
-chama o Model e retorna a resposta no formato JSON.
--->
-
 <?php
+    /*
+    Criado por: Guilherme Villas Boas Braz
+    Data: 10/06/2026
+
+    Código controlador de prato
+
+    Ele recebe requisições via POST/GET,
+    chama o Model e retorna a resposta no formato JSON.
+    */
+
     require_once __DIR__ . '/../models/prato.php'; // Importando o Model
 
     header('Content-Type: application/json'); // Informando que a resposta vai ser JSON

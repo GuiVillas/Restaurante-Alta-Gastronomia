@@ -1,15 +1,14 @@
-<!--
-Criado por: Guilherme Villas Boas Braz
-Data: 09/06/2026
-
-Código controlador de autenticação.
-
-Ele processa as requisições de login, 
-verifica as credenciais e 
-inicia a sessão para o usuário.
--->
-
 <?php
+    /*
+    Criado por: Guilherme Villas Boas Braz
+    Data: 09/06/2026
+
+    Código controlador de autenticação.
+
+    Ele processa as requisições de login, 
+    verifica as credenciais e 
+    inicia a sessão para o usuário.
+    */
     require_once __DIR__ . "/../config/database.php"; // Importando o database.php
 
     class AuthController { // Criando classe para controle de autenticação
@@ -47,7 +46,7 @@ inicia a sessão para o usuário.
             $_SESSION = array(); // Limpando as variáveis da sessão
             session_destroy(); // Apagando a sessão
 
-            header("Location: ../public/index.php"); // Enviando o usuário para a página principal
+            header("Location: ../views/admin/index.php"); // Enviando o usuário para a página principal
             exit; // Saindo
         }
 

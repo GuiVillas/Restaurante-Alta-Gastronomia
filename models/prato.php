@@ -1,21 +1,21 @@
-<!--
-Criado por: Guilherme Villas Boas Braz
-Data: 10/06/2026
-
-Código de modelo do prato
-
-Ele conversa com o banco de dados sobre o prato.
--->
-
 <?php
+    /*
+    Criado por: Guilherme Villas Boas Braz
+    Data: 10/06/2026
+
+    Código de modelo do prato
+
+    Ele conversa com o banco de dados sobre o prato.
+    */
+
     require_once __DIR__ . "/../config/database.php"; // Importando o arquivo de conexão com o banco de dados
 
     class Prato { // Criando uma classe prato
         public static function listar() { // Criando método para listar os pratos
             $db = Database::getConnection(); // Obtendo conexão com o banco de dados
-            $sql = "SELECT p.id, p.nome, p.preco, p.ativo, c.ativo, c.nome as categoria
+            $sql = "SELECT p.id, p.nome, p.preco, p.ativo, c.nome as categoria
                     FROM prato p LEFT JOIN categoria_prato c ON p.categoria_prato_id = c.id
-                    ORDER BY p.id DESC"; // Criando string do comando de consulta
+                    ORDER BY p.id ASC"; // Criando string do comando de consulta
             $stmt = $db->query($sql); // Executando consulta
             return $stmt->fetchAll(); // Retornando os registros
         }
