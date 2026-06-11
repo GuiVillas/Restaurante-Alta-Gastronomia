@@ -46,7 +46,7 @@
             $_SESSION = array(); // Limpando as variáveis da sessão
             session_destroy(); // Apagando a sessão
 
-            header("Location: ../views/admin/index.php"); // Enviando o usuário para a página principal
+            header("Location: ../admin/login.php"); // Enviando o usuário para a página principal
             exit; // Saindo
         }
 
