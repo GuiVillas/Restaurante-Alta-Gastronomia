@@ -1,8 +1,8 @@
 <?php
-    require_once __DIR__ . '/../../controllers/AuthController.php';
-    AuthController::protegerPagina(); 
+// views/admin/reservas.php
+// require_once __DIR__ . '/../../controllers/AuthController.php';
+// AuthController::protegerPagina(); 
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11,13 +11,48 @@
 </head>
 <body>
 
-    <h2>Gestão de Reservas e Pesquisa (AJAX)</h2>
+    <h2>Gestão de Reservas</h2>
 
     <fieldset>
-        <legend>Pesquisar Registros</legend>
-        <input type="text" id="campoPesquisa" placeholder="Nome do cliente ou status..." size="40">
+        <legend id="tituloForm">Nova Reserva</legend>
+        <form id="formReserva">
+            <input type="hidden" name="id" id="id"> <label>ID Cliente:</label>
+            <input type="number" name="cliente_id" id="cliente_id" required>
+            
+            <label>ID Mesa:</label>
+            <input type="number" name="mesa_id" id="mesa_id" required><br><br>
+
+            <label>Data:</label>
+            <input type="date" name="data_reserva" id="data_reserva" required>
+            
+            <label>Hora:</label>
+            <input type="time" name="hora_reserva" id="hora_reserva" required><br><br>
+
+            <label>Nº Pessoas:</label>
+            <input type="number" name="num_pessoas" id="num_pessoas" required>
+            
+            <label>Status:</label>
+            <select name="status" id="status">
+                <option value="Confirmada">Confirmada</option>
+                <option value="Cancelada">Cancelada</option>
+                <option value="Concluída">Concluída</option>
+            </select><br><br>
+
+            <label>Observações:</label><br>
+            <textarea name="observacoes" id="observacoes" rows="3" cols="40"></textarea><br><br>
+
+            <button type="submit" id="btnSalvar">Salvar Reserva</button>
+            <button type="button" onclick="limparFormulario()">Cancelar Edição</button>
+        </form>
+    </fieldset>
+
+    <br>
+
+    <fieldset>
+        <legend>Pesquisar</legend>
+        <input type="text" id="campoPesquisa" placeholder="Nome do cliente ou status...">
         <button type="button" onclick="pesquisarReservas()">Buscar</button>
-        <button type="button" onclick="carregarReservas()">Limpar Filtro</button>
+        <button type="button" onclick="carregarReservas()">Ver Todos</button>
     </fieldset>
 
     <br>
@@ -32,10 +67,9 @@
                 <th>Hora</th>
                 <th>Pessoas</th>
                 <th>Status</th>
-            </tr>
+                <th>Ações</th> </tr>
         </thead>
-        <tbody id="tabelaReservas">
-            </tbody>
+        <tbody id="tabelaReservas"></tbody>
     </table>
 
     <script>
@@ -44,13 +78,12 @@
             tbody.innerHTML = ''; 
             
             if (dados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" align="center">Nenhuma reserva encontrada.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" align="center">Nenhuma reserva encontrada.</td></tr>';
                 return;
             }
 
             dados.forEach(reserva => {
                 let dataFormatada = reserva.data_reserva.split('-').reverse().join('/');
-                
                 tbody.innerHTML += `
                     <tr>
                         <td>${reserva.id}</td>
@@ -60,6 +93,10 @@
                         <td>${reserva.hora_reserva}</td>
                         <td>${reserva.num_pessoas}</td>
                         <td>${reserva.status}</td>
+                        <td>
+                            <button onclick="editarReserva(${reserva.id})">Editar</button>
+                            <button onclick="deletarReserva(${reserva.id})">Excluir</button>
+                        </td>
                     </tr>
                 `;
             });
@@ -77,6 +114,63 @@
             fetch('../../controllers/ReservaController.php?acao=pesquisar&termo=' + encodeURIComponent(termo))
                 .then(response => response.json())
                 .then(dados => renderizarTabela(dados));
+        }
+
+        document.getElementById('formReserva').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            
+            let acao = document.getElementById('id').value ? 'atualizar' : 'cadastrar';
+            formData.append('acao', acao);
+
+            fetch('../../controllers/ReservaController.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.mensagem);
+                if (data.sucesso) {
+                    limparFormulario();
+                    carregarReservas();
+                }
+            });
+        });
+
+        function editarReserva(id) {
+            function editarReserva(id) {
+            console.log("ID recebido:", id);
+
+            fetch('../../controllers/ReservaController.php?acao=buscar&id=' + id)
+            }
+        }
+
+        function limparFormulario() {
+            document.getElementById('formReserva').reset();
+            document.getElementById('id').value = '';
+            document.getElementById('tituloForm').innerText = "Nova Reserva";
+            document.getElementById('btnSalvar').innerText = "Salvar Reserva";
+        }
+
+        function deletarReserva(id) {
+            if(confirm('Tem certeza que deseja excluir esta reserva?')) {
+                let formData = new FormData();
+                formData.append('acao', 'deletar');
+                formData.append('id', id);
+
+                fetch('../../controllers/ReservaController.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.sucesso) {
+                        carregarReservas();
+                    } else {
+                        alert('Erro ao excluir.');
+                    }
+                });
+            }
         }
 
         carregarReservas();

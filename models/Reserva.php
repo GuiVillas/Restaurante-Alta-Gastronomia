@@ -37,5 +37,39 @@
             $stmt->execute([$termoLike, $termoLike]); // Executando o comando de consulta
             return $stmt->fetchAll(); // Retornando os registros da consulta
         }
+
+        public static function buscarPorId($id) {
+            $db = Database::getConnection();
+            $sql = "SELECT * FROM reserva 
+                    WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([$id]);
+            return $stmt->fetch();
+        }
+
+        public static function cadastrar($cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs) {
+            $db = Database::getConnection();
+            $sql = "INSERT INTO reserva (cliente_id, mesa_id, data_reserva, hora_reserva, num_pessoas, status, observacoes)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $db->prepare($sql);
+            return $stmt->execute([$cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs]);
+        }
+
+        public static function atualizar($id, $cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs) {
+            $db = Database::getConnection();
+            $sql = "UPDATE reserva
+                    SET cliente_id = ?, mesa_id = ?, data_reserva =?, hora_reserva = ?, num_pessoas = ?, status = ?, observacoes = ?
+                    WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            return $stmt->execute([$cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs, $id]);
+        }
+
+        public static function deletar($id) {
+            $db = Database::getConnection();
+            $sql = "DELETE FROM reserva
+                    WHERE id = ?";
+            $stmt = $db->prepare($sql);
+            return $stmt->execute([$id]);
+        }
     }
 ?>
