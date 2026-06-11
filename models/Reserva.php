@@ -8,31 +8,34 @@
     Ele conversa com o banco de dados sobre a reserva.
     */
 
-    require_once __DIR__ . '/../config/database.php';
+    require_once __DIR__ . '/../config/database.php'; // Importando o arquivo de conexão com o banco de dados
 
-    class Prato {
-        public static function listar() {
-            $db = Database::getConnection();
-            $sql = "SELECT p.id, p.nome, p.preco, p.ativo, c.nome as categoria
-                    FROM prato p
-                    LEFT JOIN categoria_prato c ON p.categoria_prato_id = c.id
-                    ORDER BY p.id ASC";
-            $stmt = $db->query($sql);
-            return $stmt->fetchAll();
+    class Reserva { // Criando classe Reserva
+        public static function listar() { // Criando método para listar as reservas
+            $db = Database::getConnection(); // Obtendo conexão com o banco de dados
+            $sql = "SELECT r.id, r.data_reserva, r.hora_reserva, r.num_pessoas, r.status, 
+                        c.nome AS cliente_nome, m.numero AS mesa_numero 
+                    FROM reserva r
+                    INNER JOIN cliente c ON r.cliente_id = c.id
+                    INNER JOIN mesa m ON r.mesa_id = m.id
+                    ORDER BY r.data_reserva ASC, r.hora_reserva ASC"; // Criando a string do comando de consulta
+            $stmt = $db->query($sql); // Executando o a consulta
+            return $stmt->fetchAll(); // Retornando os registros da consulta
         }
 
-        public static function cadastrar($nome, $preco, $categoria_id, $descricao, $ativo) {
-            $db = Database::getConnection();
-            $sql = "INSERT INTO prato (nome, preco, categoria_prato_id, descricao, ativo) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $db->query($sql);
-            return $stmt->execute([$nome, $preco, $categoria_id, $descricao, $ativo]);
-        }
-
-        public static function deletar($id) {
-            $db = Database::getConnection();
-            $sql = "DELETE FROM prato WHERE id = ?"
-            $stmt = $db->query($sql);
-            return $stmt->execute([$id]);
+        public static function pesquisar($termo) { // Criando método para pesquisar reserva
+            $db = Database::getConnection(); // Obtendo conexão com o banco de dados
+            $sql = "SELECT r.id, r.data_reserva, r.hora_reserva, r.num_pessoas, r.status,
+                        c.nome AS cliente_nome, m.numero AS mesa_numero 
+                    FROM reserva r
+                    INNER JOIN cliente c ON r.cliente_id = c.id
+                    INNER JOIN mesa m ON r.mesa_id = m.id
+                    WHERE c.nome LIKE ? OR r.status LIKE ?
+                    ORDER BY r.data_reserva ASC"; // Criando a string do comando de consulta
+            $stmt = $db->prepare($sql); // Preparando o comando de consulta
+            $termoLike = "%" . $termo . "%"; // Preparando o critério de pesquisa com qualquer coisa antes ou depois
+            $stmt->execute([$termoLike, $termoLike]); // Executando o comando de consulta
+            return $stmt->fetchAll(); // Retornando os registros da consulta
         }
     }
 ?>
