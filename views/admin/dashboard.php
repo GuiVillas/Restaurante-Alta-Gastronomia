@@ -19,6 +19,7 @@
         <hr>
         <h3>Menu do Sistema</h3>
         <ul>
+            <li><a href="clientes.php">Gerenciar Clientes</a></li>
             <li><a href="reservas.php">Gerenciar Reservas</a></li>
             <li><a href="comandas.php">Gerenciar Comandas</a></li>
             <li><a href="cardapio.php">Gerenciar Pratos</a></li>
