@@ -33,7 +33,7 @@
         
         case 'buscar':
             $id = $_GET['id'] ?? 0;
-            echo json_encode(Reserva::pesquisar($id));
+            echo json_encode(Reserva::buscarPorId($id));
             break;
 
         case 'cadastrar':

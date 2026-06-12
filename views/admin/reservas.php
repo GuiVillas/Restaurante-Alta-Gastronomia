@@ -138,11 +138,23 @@
         });
 
         function editarReserva(id) {
-            function editarReserva(id) {
-            console.log("ID recebido:", id);
-
             fetch('../../controllers/ReservaController.php?acao=buscar&id=' + id)
-            }
+                .then(response => response.json())
+                .then(dados => {
+                    // Preenche o formulário com os dados vindos do banco
+                    document.getElementById('id').value = dados.id;
+                    document.getElementById('cliente_id').value = dados.cliente_id;
+                    document.getElementById('mesa_id').value = dados.mesa_id;
+                    document.getElementById('data_reserva').value = dados.data_reserva;
+                    document.getElementById('hora_reserva').value = dados.hora_reserva;
+                    document.getElementById('num_pessoas').value = dados.num_pessoas;
+                    document.getElementById('status').value = dados.status;
+                    document.getElementById('observacoes').value = dados.observacoes;
+                    
+                    document.getElementById('tituloForm').innerText = "Editar Reserva #" + dados.id;
+                    document.getElementById('btnSalvar').innerText = "Atualizar Reserva";
+                    window.scrollTo(0, 0);
+                });
         }
 
         function limparFormulario() {

@@ -9,7 +9,7 @@
     chama o Model e retorna a resposta no formato JSON.
     */
 
-    require_once __DIR__ . '/../models/prato.php'; // Importando o Model
+    require_once __DIR__ . '/../models/Prato.php'; // Importando o Model
 
     header('Content-Type: application/json'); // Informando que a resposta vai ser JSON
 

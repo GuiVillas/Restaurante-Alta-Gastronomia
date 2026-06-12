@@ -61,11 +61,12 @@ CREATE TABLE pedido (
     mesa_id INT,
     usuario_id INT,
     data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'Ativa',
     FOREIGN KEY (mesa_id) REFERENCES mesa(id),
     FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
-CREATE TABLE contem (
+CREATE TABLE prato_pedido (
     id INT AUTO_INCREMENT PRIMARY KEY,
     prato_id INT,
     pedido_id INT,
@@ -134,12 +135,14 @@ INSERT INTO reserva (
 (2, 9, '21:00:00', '2025-08-15', 'Pendente', NULL, 8),
 (3, 5, '19:30:00', '2025-08-16', 'Confirmada', 'Mesa próxima à janela', 5);
 
-INSERT INTO pedido (mesa_id, usuario_id) VALUES
-(3, 3),
-(7, 4),
-(4, 3);
+INSERT INTO pedido (mesa_id, usuario_id, status) VALUES
+(3, 3, 'Ativa'),
+(7, 4, 'Fechada'),
+(4, 3, 'Cancelada'),
+(5, 4, 'Ativa'),
+(2, 3, 'Fechada');
 
-INSERT INTO contem (
+INSERT INTO prato_pedido (
     prato_id,
     pedido_id,
     quantidade,
@@ -156,4 +159,11 @@ INSERT INTO contem (
 
 (4, 3, 2, 98.50),
 (6, 3, 2, 32.00),
-(8, 3, 2, 12.00);
+(8, 3, 2, 12.00),
+
+(3, 4, 1, 120.00),
+(9, 4, 2, 18.00),
+
+(5, 5, 1, 89.90),
+(6, 5, 1, 32.00),
+(10, 5, 2, 45.00);

@@ -20,6 +20,7 @@
         <h3>Menu do Sistema</h3>
         <ul>
             <li><a href="reservas.php">Gerenciar Reservas</a></li>
+            <li><a href="comandas.php">Gerenciar Comandas</a></li>
             <li><a href="cardapio.php">Gerenciar Pratos</a></li>
             <li><a href="relatorios.php">Relatórios de Faturamento</a></li>
         </ul>
