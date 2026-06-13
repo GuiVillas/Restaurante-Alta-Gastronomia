@@ -3,7 +3,15 @@
     Criado por: Guilherme Villas Boas Braz
     Data: 12/06/2026
 
-    Código de modelo de Pedido
+    Código de modelo para a entidade Pedido
+
+    Ele é responsável por interagir com o banco de dados e 
+    realizar operações como listar comandas ativas, 
+    listar histórico de comandas, 
+    abrir uma nova comanda, 
+    fechar uma comanda, 
+    adicionar itens a uma comanda e 
+    listar os itens de uma comanda específica.
     */
 
     require_once __DIR__ . '/../config/database.php';

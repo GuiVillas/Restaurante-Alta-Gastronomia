@@ -31,38 +31,38 @@
             echo json_encode($reservas); // Retorna json com as reservas
             break; // Parando
         
-        case 'buscar':
-            $id = $_GET['id'] ?? 0;
-            echo json_encode(Reserva::buscarPorId($id));
-            break;
+        case 'buscar': // Caso de buscar por ID
+            $id = $_GET['id'] ?? 0; // Obtendo o ID da reserva que será buscada
+            echo json_encode(Reserva::buscarPorId($id)); // Retornando json com a reserva encontrada
+            break; // Parando
 
-        case 'cadastrar':
-        case 'atualizar':
-            $id = $_POST['id'] ?? null;
-            $cliente_id = $_POST['cliente_id'] ?? null;
-            $mesa_id = $_POST['mesa_id'] ?? null;
-            $data = $_POST['data_reserva'] ?? '';
-            $hora = $_POST['hora_reserva'] ?? '';
-            $pessoas = $_POST['num_pessoas'] ?? 1;
-            $status = $_POST['status'] ?? 'Confirmada';
-            $obs = $_POST['observacoes'] ?? '';
+        case 'cadastrar': // Caso de cadastrar
+        case 'atualizar': // Caso de atualizar
+            $id = $_POST['id'] ?? null; // Obtendo o ID da reserva
+            $cliente_id = $_POST['cliente_id'] ?? null; // Obtendo o ID do cliente que fez a reserva
+            $mesa_id = $_POST['mesa_id'] ?? null; // Obtendo o ID da mesa reservada
+            $data = $_POST['data_reserva'] ?? ''; // Obtendo a data da reserva
+            $hora = $_POST['hora_reserva'] ?? ''; // Obtendo a hora da reserva
+            $pessoas = $_POST['num_pessoas'] ?? 1; // Obtendo o número de pessoas para a reserva
+            $status = $_POST['status'] ?? 'Confirmada'; // Obtendo o status da reserva
+            $obs = $_POST['observacoes'] ?? ''; // Obtendo as observações da reserva
 
-            if ($acao === 'cadastrar') {
-                $sucesso = Reserva::cadastrar($cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs);
-                $msg = $sucesso ? 'Reserva cadastrada!' : 'Erro ao cadastrar!';
-            } else {
-                $sucesso = Reserva::atualizar($id, $cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs);
-                $msg = $sucesso ? 'Reserva atualizada!' : 'Erro ao atualizar!';
+            if ($acao === 'cadastrar') { // Se a ação for cadastrar...
+                $sucesso = Reserva::cadastrar($cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs); // Tentando cadastrar a reserva
+                $msg = $sucesso ? 'Reserva cadastrada!' : 'Erro ao cadastrar!'; // Definindo a mensagem de acordo com o resultado do cadastro
+            } else { // Se a ação for atualizar...
+                $sucesso = Reserva::atualizar($id, $cliente_id, $mesa_id, $data, $hora, $pessoas, $status, $obs); // Tentando atualizar a reserva
+                $msg = $sucesso ? 'Reserva atualizada!' : 'Erro ao atualizar!'; // Definindo a mensagem de acordo com o resultado da atualização
             }
 
-            echo json_encode(['sucesso' => $sucesso, 'mensagem' => $msg]);
-            break;
+            echo json_encode(['sucesso' => $sucesso, 'mensagem' => $msg]); // Retornando a resposta em JSON indicando o sucesso ou falha da operação
+            break; // Parando
 
-        case 'deletar':
-            $id = $_POST['id'];
-            $sucesso = Reserva::deletar($id);
-            echo json_encode(['sucesso' => $sucesso]);
-            break;
+        case 'deletar': // Caso de deletar
+            $id = $_POST['id']; // Obtendo o ID da reserva que será deletada
+            $sucesso = Reserva::deletar($id); // Tentando deletar a reserva
+            echo json_encode(['sucesso' => $sucesso]); // Retornando a resposta em JSON indicando o sucesso ou falha da exclusão
+            break; // Parando
 
         default: // Criando caso padrão
             echo json_encode(['sucesso' => false, 'mensagem' => 'Ação não reconhecida.']); // Retorna json com mensagem de ação não reconhecida

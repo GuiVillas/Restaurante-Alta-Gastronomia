@@ -10,73 +10,73 @@
     O código também inclui tratamento de erros para garantir que as operações sejam realizadas de forma segura e eficiente.
     */
 
-    require_once __DIR__ . '/../models/Cliente.php';
+    require_once __DIR__ . '/../models/Cliente.php'; // Importando o modelo Cliente
 
-    header('Content-Type: application/json');
+    header('Content-Type: application/json'); // Informando que a resposta vai ser JSON
 
-    $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
+    $acao = $_POST['acao'] ?? $_GET['acao'] ?? ''; // Obtendo a ação
 
-    switch ($acao) {
-        case 'listar':
-            echo json_encode(Cliente::listar());
-            break;
+    switch ($acao) { // Criando switch para decidir qual ação executar
+        case 'listar': // Criando o caso de listar
+            echo json_encode(Cliente::listar()); // Retornando a lista de clientes em JSON
+            break; // Parando
         
-        case 'pesquisar':
-            $termo = $_GET['termo'] ?? $_POST['termo'] ?? '';
-            echo json_encode(!empty($termo) ? Cliente::pesquisar($termo) : Cliente::listar());
-            break;
+        case 'pesquisar': // Criando o caso de pesquisar
+            $termo = $_GET['termo'] ?? $_POST['termo'] ?? ''; // Obtendo o termo de pesquisa
+            echo json_encode(!empty($termo) ? Cliente::pesquisar($termo) : Cliente::listar()); // Retornando os clientes em JSON
+            break; // Parando
 
-        case 'buscar':
-            $id = $_GET['id'] ?? $_POST['id'] ?? 0;
-            echo json_encode(Cliente::buscarPorId($id));
-            break;
+        case 'buscar': // Criando o caso de buscar por ID
+            $id = $_GET['id'] ?? $_POST['id'] ?? 0; // Obtendo o ID do cliente
+            echo json_encode(Cliente::buscarPorId($id)); // Retornando o cliente em JSON
+            break; // Parando
 
-        case 'cadastrar':
-            $nome = $_POST['nome'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $telefone = $_POST['telefone'] ?? '';
+        case 'cadastrar': // Criando o caso de cadastrar
+            $nome = $_POST['nome'] ?? ''; // Obtendo o nome
+            $email = $_POST['email'] ?? ''; // Obtendo o email
+            $telefone = $_POST['telefone'] ?? ''; // Obtendo o telefone
 
-            try {
-                $sucesso = Cliente::cadastrar($nome, $email, $telefone);
-                $msg = $sucesso ? 'Cliente cadastrado com sucesso!' : 'Erro ao cadastrar cliente.';
-            } catch (Exception $e) {
-                $sucesso = false;
-                $msg = 'Erro: Este e-mail já está cadastrado.';
+            try { // Tentando cadastrar o cliente
+                $sucesso = Cliente::cadastrar($nome, $email, $telefone); // Verificando se o cadastro foi bem-sucedido
+                $msg = $sucesso ? 'Cliente cadastrado com sucesso!' : 'Erro ao cadastrar cliente.'; // Definindo a mensagem de acordo com o resultado do cadastro
+            } catch (Exception $e) { // Capturando exceção caso o email já esteja cadastrado
+                $sucesso = false; // Definindo o sucesso como falso
+                $msg = 'Erro: Este e-mail já está cadastrado.'; // Definindo a mensagem de erro para email já cadastrado
             }
 
-            echo json_encode(['sucesso' => $sucesso, 'mensagem' => $msg]);
-            break;
+            echo json_encode(['sucesso' => $sucesso, 'mensagem' => $msg]); // Retornando a resposta em JSON
+            break; // Parando
 
-        case 'atualizar':
-            $id = $_POST['id'] ?? null;
-            $nome = $_POST['nome'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $telefone = $_POST['telefone'] ?? '';
+        case 'atualizar': // Criando o caso de atualizar
+            $id = $_POST['id'] ?? null; // Obtendo o ID
+            $nome = $_POST['nome'] ?? ''; // Obtendo o nome
+            $email = $_POST['email'] ?? ''; // Obtendo o email
+            $telefone = $_POST['telefone'] ?? ''; // Obtendo o telefone
 
-            try {
-                $sucesso = Cliente::atualizar($id, $nome, $email, $telefone);
-                $msg = $sucesso ? 'Cliente atualizado com sucesso!' : 'Erro ao atualizar cliente.';
-            } catch (Exception $e) {
-                $sucesso = false;
-                $msg = 'Erro: Este e-mail já está cadastrado para outro cliente.';
+            try { // Tentando atualizar o cliente
+                $sucesso = Cliente::atualizar($id, $nome, $email, $telefone); // Verificando se a atualização foi bem-sucedida
+                $msg = $sucesso ? 'Cliente atualizado com sucesso!' : 'Erro ao atualizar cliente.'; // Definindo a mensagem de acordo com o resultado da atualização
+            } catch (Exception $e) { // Capturando exceção caso o email já esteja cadastrado
+                $sucesso = false; // Definindo o sucesso como falso
+                $msg = 'Erro: Este e-mail já está cadastrado para outro cliente.'; // Definindo a mensagem de erro para email já cadastrado
             }
 
-            echo json_encode(['sucesso' => $sucesso, 'mensagem' => $msg]);
-            break;
+            echo json_encode(['sucesso' => $sucesso, 'mensagem' => $msg]); // Retornando a resposta em JSON
+            break; // Parando
 
-        case 'deletar':
-            $id = $_POST['id'] ?? 0;
-            $sucesso = Cliente::deletar($id);
+        case 'deletar': // Criando o caso de deletar
+            $id = $_POST['id'] ?? 0; // Obtendo o ID
+            $sucesso = Cliente::deletar($id); // Obtendo se a exclusão foi bem-sucedida
 
-            if ($sucesso) {
-                echo json_encode(['sucesso' => true, 'mensagem' => 'Cliente deletado com sucesso!']);
-            } else {
-                echo json_encode(['sucesso' => false, 'mensagem' => 'Aviso: Não é possível excluir este cliente pois ele possui reservas cadastradas.']);
+            if ($sucesso) { // Se a exclusão foi bem-sucedida...
+                echo json_encode(['sucesso' => true, 'mensagem' => 'Cliente deletado com sucesso!']); // Retornando mensagem de sucesso em JSON
+            } else { // Se a exclusão falhou...
+                echo json_encode(['sucesso' => false, 'mensagem' => 'Aviso: Não é possível excluir este cliente pois ele possui reservas cadastradas.']); // Retornando mensagem de erro em JSON
             }
-            break;
+            break; // Parando
 
-        default:
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Ação inválida.']);
-            break;
+        default: // Criando caso padrão
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Ação inválida.']); // Retornando mensagem de ação inválida em JSON
+            break; // Parando
     }
 ?>

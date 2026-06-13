@@ -5,10 +5,10 @@
 
     Código controlador de autenticação.
 
-    Ele processa as requisições de login, 
-    verifica as credenciais e 
-    inicia a sessão para o usuário.
+    Ele é responsável por gerenciar as operações de login e logout, 
+    e proteger as páginas que exigem autenticação.
     */
+    
     require_once __DIR__ . "/../config/database.php"; // Importando o database.php
 
     class AuthController { // Criando classe para controle de autenticação
