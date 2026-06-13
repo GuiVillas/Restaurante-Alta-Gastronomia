@@ -1,43 +1,57 @@
 <?php
-    /*
-    Criado por: Guilherme Villas Boas Braz
-    Data: 11/06/2026
+    require_once __DIR__ . '/../config/database.php';
 
-    Código de modelo da reserva
+    /**
+     * Modelo para gerenciar as operações relacionadas às reservas.
+     * 
+     * Contém métodos estáticos para listar, pesquisar, buscar por ID,
+     * cadastrar, atualizar e deletar reservas no banco de dados.
+     */
+    class Reserva {
 
-    Ele conversa com o banco de dados sobre a reserva.
-    */
-
-    require_once __DIR__ . '/../config/database.php'; // Importando o arquivo de conexão com o banco de dados
-
-    class Reserva { // Criando classe Reserva
-        public static function listar() { // Criando método para listar as reservas
-            $db = Database::getConnection(); // Obtendo conexão com o banco de dados
+        /**
+         * Retorna a lista de todas as reservas, ordenadas por data e hora.
+         * 
+         * Utiliza uma consulta SQL com JOIN para obter os dados da tabela reserva,
+         * juntamente com o nome do cliente e o número da mesa.
+         * 
+         * @return array Lista de reservas com detalhes do cliente e mesa.
+         */
+        public static function listar() {
+            $db = Database::getConnection();
             $sql = "SELECT r.id, r.data_reserva, r.hora_reserva, r.num_pessoas, r.status, 
                         c.nome AS cliente_nome, m.numero AS mesa_numero 
                     FROM reserva r
                     INNER JOIN cliente c ON r.cliente_id = c.id
                     INNER JOIN mesa m ON r.mesa_id = m.id
-                    ORDER BY r.data_reserva ASC, r.hora_reserva ASC"; // Criando a string do comando de consulta
-            $stmt = $db->query($sql); // Executando o a consulta
-            return $stmt->fetchAll(); // Retornando os registros da consulta
+                    ORDER BY r.data_reserva ASC, r.hora_reserva ASC";
+            $stmt = $db->query($sql);
+            return $stmt->fetchAll();
         }
 
-        public static function pesquisar($termo) { // Criando método para pesquisar reserva
-            $db = Database::getConnection(); // Obtendo conexão com o banco de dados
+        /**
+         * Retorna a lista de reservas que correspondem ao termo de pesquisa.
+         * 
+         * Realiza uma consulta SQL com JOIN para buscar reservas com base no nome do cliente ou status da reserva.
+         * 
+         * @param string $termo O termo de pesquisa para filtrar as reservas.
+         * @return array Lista de reservas que correspondem ao termo.
+         */
+        public static function pesquisar($termo) {
+            $db = Database::getConnection();
             $sql = "SELECT r.id, r.data_reserva, r.hora_reserva, r.num_pessoas, r.status,
                         c.nome AS cliente_nome, m.numero AS mesa_numero 
                     FROM reserva r
                     INNER JOIN cliente c ON r.cliente_id = c.id
                     INNER JOIN mesa m ON r.mesa_id = m.id
                     WHERE c.nome LIKE ? OR r.status LIKE ?
-                    ORDER BY r.data_reserva ASC"; // Criando a string do comando de consulta
-            $stmt = $db->prepare($sql); // Preparando o comando de consulta
-            $termoLike = "%" . $termo . "%"; // Preparando o critério de pesquisa com qualquer coisa antes ou depois
-            $stmt->execute([$termoLike, $termoLike]); // Executando o comando de consulta
-            return $stmt->fetchAll(); // Retornando os registros da consulta
+                    ORDER BY r.data_reserva ASC";
+            $stmt = $db->prepare($sql);
+            $termoLike = "%" . $termo . "%";
+            $stmt->execute([$termoLike, $termoLike]);
+            return $stmt->fetchAll();
         }
-
+        
         public static function buscarPorId($id) {
             $db = Database::getConnection();
             $sql = "SELECT * FROM reserva 

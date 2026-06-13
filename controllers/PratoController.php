@@ -1,52 +1,57 @@
 <?php
-    /*
-    Criado por: Guilherme Villas Boas Braz
-    Data: 10/06/2026
+    require_once __DIR__ . '/../models/Prato.php';
 
-    Código controlador de prato
+    /**
+     * Controlador para gerenciar as operações relacionadas aos pratos.
+     * 
+     * Recebe requisições HTTP, executa as operações no modelo Prato
+     * e retorna respostas em formato JSON.
+     */
 
-    Ele recebe requisições via POST/GET,
-    chama o Model e retorna a resposta no formato JSON.
-    */
+    // Define o cabeçalho para resposta JSON
+    header('Content-Type: application/json');
 
-    require_once __DIR__ . '/../models/Prato.php'; // Importando o Model
+    // Obtém a ação a ser executada a partir dos parâmetros GET ou POST
+    $acao = $_POST['acao'] ?? $_GET['acao'] ?? '';
 
-    header('Content-Type: application/json'); // Informando que a resposta vai ser JSON
+    /**
+     * Switch para determinar qual operação executar com base na ação recebida.
+      - 'listar': Retorna a lista de todos os pratos.
+      - 'cadastrar': Cadastra um novo prato com os dados fornecidos.
+      - 'deletar': Deleta um prato, se possível (verifica dependências).
+     */
+    switch ($acao) {
+        case 'listar':
+            $pratos = Prato::listar();
+            echo json_encode($pratos);
+            break;
 
-    $acao = $_POST['acao'] ?? $_GET['acao'] ?? ''; // Obtendo a açaõ
+        case 'cadastrar':
+            $nome = $_POST['nome'] ?? '';
+            $preco = $_POST['preco'] ?? 0.00;
+            $categoria_id = !empty($_POST['categoria_id']) ? $_POST['categoria_id'] : null;
+            $descricao = $_POST['descricao'] ?? '';
+            $ativo = 1;
 
-    switch ($acao) { // Criando switch para decidir
-        case 'listar': // Criando o caso de listar
-            $pratos = Prato::listar(); // Obtendo a lista de pratos
-            echo json_encode($pratos); // Retornando a lista de pratos em json
-            break; // Parando
-
-        case 'cadastrar': // Criando o caso de cadastrar
-            $nome = $_POST['nome'] ?? ''; // Obtendo o nome
-            $preco = $_POST['preco'] ?? 0.00; // Obtendo o preço
-            $categoria_id = !empty($_POST['categoria_id']) ? $_POST['categoria_id'] : null; // Obtendo a categoria do prato
-            $descricao = $_POST['descricao'] ?? ''; // Obtendo a descriçaõ
-            $ativo = 1; // Ativo como padrão
-
-            if (Prato::cadastrar($nome, $preco, $categoria_id, $descricao, $ativo)) { // Verifica se o prato foi cadastrado
-                echo json_encode(['sucesso' => true, 'mensagem' => 'Prato cadastrado com sucesso.']); // Retorna mensagem de sucesso em JSON
-            } else { // Se não...
-                echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao cadastrar.']); // Retorna mensagem de erro em JSON
-            }
-            break; // Parando
-
-        case 'deletar': // Criando o cado de deletar
-            $id = $_POST['id'] ?? 0; // Obtendo o id do prato
-
-            if (Prato::deletar($id)) { // Verifica se o prato foi deletado
-                echo json_encode(['sucesso' => true]); // Retorna mensagem de sucesso em JSON
+            if (Prato::cadastrar($nome, $preco, $categoria_id, $descricao, $ativo)) {
+                echo json_encode(['sucesso' => true, 'mensagem' => 'Prato cadastrado com sucesso.']);
             } else {
-                echo json_encode(['sucesso' => false]); // Retorna mensagem de erro em JSON
+                echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao cadastrar.']);
             }
-            break; // Parando
+            break;
+
+        case 'deletar':
+            $id = $_POST['id'] ?? 0;
+
+            if (Prato::deletar($id)) {
+                echo json_encode(['sucesso' => true]);
+            } else {
+                echo json_encode(['sucesso' => false]);
+            }
+            break;
         
-        default: // Criando caso padrão
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Ação não reconhecida.']); // Retorna mensagem de ação não reconhecida em JSON
-            break; // Parando
+        default:
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Ação não reconhecida.']);
+            break;
     }
 ?>

@@ -1,63 +1,77 @@
 <?php
-    /*
-    Criado por: Guilherme Villas Boas Braz
-    Data: 09/06/2026
+    require_once __DIR__ . "/../config/database.php";
 
-    Código controlador de autenticação.
+    /**
+     * Classe responsável por gerenciar a autenticação dos usuários, incluindo login, logout e proteção de páginas.
+     * 
+     * Contém métodos estáticos para facilitar o acesso sem a necessidade de instanciar a classe. 
+     * O método `login` verifica as credenciais do usuário e inicia uma sessão, 
+     * enquanto o método `logout` encerra a sessão atual. 
+     * O método `protegerPagina` é utilizado para restringir o acesso a páginas protegidas, 
+     * redirecionando usuários não autenticados para a página de login.
+     */
+    class AuthController {
 
-    Ele é responsável por gerenciar as operações de login e logout, 
-    e proteger as páginas que exigem autenticação.
-    */
-    
-    require_once __DIR__ . "/../config/database.php"; // Importando o database.php
-
-    class AuthController { // Criando classe para controle de autenticação
-        public static function login($email, $senha) { // Criando método para login
-            if (session_status() === PHP_SESSION_NONE) { // Verificando se não existe sessão
-                session_start(); // Criando sessão
+        /**
+         * Realiza o login do usuário verificando as credenciais fornecidas.
+         * 
+         * @param string $email O email do usuário.
+         * @param string $senha A senha do usuário.
+         */
+        public static function login($email, $senha) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
             }
 
-            $db = Database::getConnection(); // Pegando conexão PDO
+            $db = Database::getConnection();
 
-            $stmt = $db->prepare("SELECT id, nome, email, senha, cargo FROM usuario WHERE email = ? LIMIT 1"); // Preparando consulta
-            $stmt->execute([$email]); // Executando consulta com o email
-            $usuario = $stmt->fetch(); // Obtendo resultado da consulta
+            $stmt = $db->prepare("SELECT id, nome, email, senha, cargo FROM usuario WHERE email = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $usuario = $stmt->fetch();
 
-            if ($usuario) { // Verificando se o usuário existe
-                if ($senha == $usuario['senha']) { // Verificando se as senhas batem
-                    session_regenerate_id(true); // Regenerando a sessão
+            if ($usuario) {
+                if ($senha == $usuario['senha']) {
+                    session_regenerate_id(true);
 
-                    $_SESSION['usuario_id'] = $usuario['id']; // Guardando o id do usuário
-                    $_SESSION['usuario_nome'] = $usuario['nome']; // Guardando o nome
-                    $_SESSION['usuario_cargo'] = $usuario['cargo']; // Guardando o cargo
-                    $_SESSION['logado'] = true; // Marcando o usuário como autenticado
+                    $_SESSION['usuario_id'] = $usuario['id'];
+                    $_SESSION['usuario_nome'] = $usuario['nome'];
+                    $_SESSION['usuario_cargo'] = $usuario['cargo'];
+                    $_SESSION['logado'] = true;
 
-                    return true; // Retornando que deu certo
+                    return true;
                 }
             }
-            return false; // Retornando que deu errado
+            return false;
         }
 
-        public static function logout() { // Criando método para logout
-            if (session_status() === PHP_SESSION_NONE) { // Verificando se não existe uma sessão
-                session_start(); // Criando uma sessão
+        /**
+         * Realiza o logout do usuário, 
+         * destruindo a sessão atual e 
+         * redirecionando para a página de login.
+         */
+        public static function logout() {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
             }
 
-            $_SESSION = array(); // Limpando as variáveis da sessão
-            session_destroy(); // Apagando a sessão
+            $_SESSION = array();
+            session_destroy();
 
-            header("Location: ../admin/login.php"); // Enviando o usuário para a página principal
-            exit; // Saindo
+            header("Location: ../admin/login.php");
+            exit;
         }
 
-        public static function protegerPagina() { // Criando método para proteger as páginas de não autenticados
-            if (session_status() === PHP_SESSION_NONE) { // Verificando se não existe uma sessão
-                session_start(); // Criando uma sessão
+        /**
+         * Protege páginas que requerem autenticação,
+         */
+        public static function protegerPagina() {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
             }
 
-            if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) { // Verificando se o usuário não está logado
-                header("Location: login.php?erro=autenticacao"); // Enviando o usuário para a página de autenticaçaõ
-                exit; // Saindo
+            if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+                header("Location: login.php?erro=autenticacao");
+                exit;
             }
         }
     }
